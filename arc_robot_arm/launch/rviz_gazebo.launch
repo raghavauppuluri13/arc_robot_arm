@@ -5,7 +5,7 @@
   <!-- By default, we do not start a database (it can be large) -->
   <arg name="db" default="false" />
   <!-- Allow user to specify database location -->
-  <arg name="db_path" default="$(find mvp_arm_4dof_moveit_config)/default_warehouse_mongo_db" />
+  <arg name="db_path" default="$(find mvp_arm_6dof_moveit_config)/default_warehouse_mongo_db" />
 
   <!-- By default, we are not in debug mode -->
   <arg name="debug" default="false" />
@@ -21,16 +21,16 @@
   <arg name="use_gui" default="false" />
   <arg name="use_rviz" default="true" />
 
-  <arg name="urdf_path" default="$(find mvp_arm_4dof_description)/urdf/mvp_arm_4dof.urdf"/>
+  <arg name="urdf_path" default="$(find mvp_arm_6dof_description)/urdf/mvp_arm_6dof.urdf"/>
 
   <!-- Load updated joint limits (override information from URDF) -->
   <group ns="robot_description_planning">
-    <rosparam command="load" file="$(find mvp_arm_4dof_moveit_config)/config/joint_limits.yaml"/>
+    <rosparam command="load" file="$(find mvp_arm_6dof_moveit_config)/config/joint_limits.yaml"/>
   </group>
 
   <!-- Load default settings for kinematics; these settings are overridden by settings in a node's namespace -->
   <group ns="robot_description_kinematics">
-    <rosparam command="load" file="$(find mvp_arm_4dof_moveit_config)/config/kinematics.yaml"/>
+    <rosparam command="load" file="$(find mvp_arm_6dof_moveit_config)/config/kinematics.yaml"/>
 
   </group>
 
@@ -48,15 +48,14 @@
 		</include>
 
 		<!-- push robot_description to factory and spawn robot in gazebo at the origin, change x,y,z arguments to spawn in a different position -->
-		<node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model robot -x 0.35 -y 0 -z 0.02"
+		<node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model robot -x 0.5 -y 0 -z 0.02"
 			respawn="false" output="screen" />
 	</group>
 
   <!-- Start ROS controllers -->
-	<include file="$(find mvp_arm_4dof_moveit_config)/launch/ros_controllers.launch"/>
+	<include file="$(find mvp_arm_6dof_moveit_config)/launch/ros_controllers.launch"/>
 
   <!-- If needed, broadcast static tf for robot root -->
-<node pkg="tf" type="static_transform_publisher" name="camera_broadcaster" args="0 0 0.025 0.13 0 1 0 gripper_base_v1_1 camera 100" />
   <!-- We do not have a robot connected, so publish fake joint states -->
   <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" unless="$(arg use_gui)">
     <rosparam param="source_list">[move_group/fake_controller_joint_states]</rosparam>
@@ -71,7 +70,7 @@
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen" />
 
   <!-- Run the main MoveIt executable without trajectory execution (we do not have controllers configured by default) -->
-  <include file="$(find mvp_arm_4dof_moveit_config)/launch/move_group.launch">
+  <include file="$(find mvp_arm_6dof_moveit_config)/launch/move_group.launch">
     <arg name="allow_trajectory_execution" value="true"/>
     <arg name="fake_execution" value="false"/>
     <arg name="info" value="true"/>
@@ -80,13 +79,13 @@
   </include>
 
   <!-- Run Rviz and load the default config to see the state of the move_group node -->
-  <include file="$(find mvp_arm_4dof_moveit_config)/launch/moveit_rviz.launch" if="$(arg use_rviz)">
-    <arg name="rviz_config" value="$(find mvp_arm_4dof_moveit_config)/launch/moveit.rviz"/>
+  <include file="$(find mvp_arm_6dof_moveit_config)/launch/moveit_rviz.launch" if="$(arg use_rviz)">
+    <arg name="rviz_config" value="$(find mvp_arm_6dof_moveit_config)/launch/moveit.rviz"/>
     <arg name="debug" value="$(arg debug)"/>
   </include>
 
   <!-- If database loading was enabled, start mongodb as well -->
-  <include file="$(find mvp_arm_4dof_moveit_config)/launch/default_warehouse_db.launch" if="$(arg db)">
+  <include file="$(find mvp_arm_6dof_moveit_config)/launch/default_warehouse_db.launch" if="$(arg db)">
     <arg name="moveit_warehouse_database_path" value="$(arg db_path)"/>
   </include>
 

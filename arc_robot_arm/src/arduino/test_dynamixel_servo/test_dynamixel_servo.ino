@@ -16,7 +16,7 @@
 
 using namespace ControlTableItem;
 
-const uint8_t J1 = 1;
+const uint8_t J6 = 6;
 
 const float DXL_PROTOCOL_VERSION = 1.0;
 
@@ -45,8 +45,7 @@ void print_servo(){
 
 void drive_servo(){
     nh.loginfo("Driving:");
-    dxl.setGoalPosition(J1, 512);
-		//dxl.setGoalPosition(J1, servo, UNIT_DEGREE);
+		dxl.setGoalPosition(J6, servo, UNIT_DEGREE);
 }
 
 /* Callback for JointState subscriber, runs when new JointState
@@ -65,11 +64,11 @@ ros::Subscriber<std_msgs::Float64> sub("test_servo", joint_control_cb);
 void setup(){
 	dxl.begin(1000000);
 	dxl.setPortProtocolVersion(DXL_PROTOCOL_VERSION);
-	dxl.ping(J1);
+	dxl.ping(J6);
 
-	dxl.torqueOff(J1);
-	dxl.setOperatingMode(J1, OP_POSITION);
-	dxl.torqueOn(J1);
+	dxl.torqueOff(J6);
+	dxl.setOperatingMode(J6, OP_POSITION);
+	dxl.torqueOn(J6);
 
   nh.initNode();
   nh.subscribe(sub);

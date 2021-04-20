@@ -19,10 +19,7 @@
 #include <ros.h>
 #include <std_msgs/UInt16.h>
 #include <sensor_msgs/JointState.h>
-//#define CMD_SERIAL Serial1
 
-
-//#define DXL_SERIAL Serial2
 
 #define DOF 6
 #define OFFSET 90 // Offset angle from sim to real robot
@@ -128,8 +125,6 @@ void print_arr(float arr[]){
 ros::Subscriber<sensor_msgs::JointState> sub("move_group/fake_controller_joint_states", joint_control_cb);
 
 void setup(){
-//  dxl = DynamixelShield(DXL_SERIAL);
-//  CMD_SERIAL.begin(57600);
 	dxl.begin(1000000);
 	dxl.setPortProtocolVersion(DXL_PROTOCOL_VERSION);
 	dxl.ping(J1);
@@ -146,7 +141,6 @@ void setup(){
 		dxl.torqueOn(i);
 	}
 
-//  nh.getHardware()->setBaud(57600);
   nh.initNode();
   nh.subscribe(sub);
 }
